@@ -4,7 +4,7 @@
 #include <gtest/gtest.h>
 
 // https://www.artificialworlds.net/blog/2017/05/11/c-iterator-example-and-an-iterable-range/
-
+namespace { 
 class myit
 {
 private:
@@ -62,6 +62,7 @@ public:
 	myit begin() { return myit(start_); }
 	myit end() { return myit(end_); }
 };
+}
 
 TEST(NumberSequce, range_for)
 {
@@ -69,6 +70,7 @@ TEST(NumberSequce, range_for)
 	{
 		std::cout << n << ",";
 	}
+	std::cout << std::endl;
 }
 
 TEST(NumberSequce, vector_fill)
