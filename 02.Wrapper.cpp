@@ -11,42 +11,32 @@ class myit
 {
 private:
 
-	char* ch_;
-	class chholder
-	{
-
-		char* ch_;
-
-	public:
-
-		chholder(char* ch) : ch_(ch) {}
-		char operator*() { return std::toupper(*ch_); }
-	};
+	std::string::const_iterator wrapped_;
 
 public:
 
 	// Previously provided by std::iterator (deprecated since c++17)
-	using value_type = char;
+	using value_type = int;
 	using difference_type = std::ptrdiff_t;
-	using pointer = char*;
-	using reference = char&;
+	using pointer = int*;
+	using reference = int&;
 	using iterator_category = std::input_iterator_tag;
 
-	explicit myit(char* ch) : ch_(ch) {}
-	char operator*() const { return std::toupper(*ch_); }
-	bool operator==(const myit& other) const { return ch_ == other.ch_; }
+	explicit myit(std::string::const_iterator wrapped) : wrapped_(wrapped) {}
+	int operator*() const { return std::toupper(*wrapped_); }
+	bool operator==(const myit& other) const { return wrapped_ == other.wrapped_; }
 	bool operator!=(const myit& other) const { return !(*this == other); }
 
-	chholder operator++(int)
+	myit operator++(int)
 	{
-		chholder ret(ch_);
+		myit ret(wrapped_);
 		++*this;
 		return ret;
 	}
 
 	myit& operator++()
 	{
-		++ch_;
+		++wrapped_;
 		return *this;
 	}
 };
@@ -56,8 +46,8 @@ class Upper
 public:
 
 	Upper(const std::string& str) : str_(str) {}
-	myit begin() { return myit(&str_[0]); }
-	myit end() { return myit(&str_[str_.size()]); }
+	myit begin() { return myit(str_.begin()); }
+	myit end() { return myit(str_.end()); }
 
 private:
 
@@ -78,5 +68,6 @@ TEST(Wrapper, Upper)
 	std::string newfoo(std::begin(up), std::end(up));
 	EXPECT_EQ(newfoo, "BAR");
 
-	EXPECT_EQ(*(++(++up.begin())), 'R');
+	auto it = up.begin();
+	EXPECT_EQ(*++(it++), 'A');
 }
